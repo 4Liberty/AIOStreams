@@ -1,5 +1,25 @@
 # Changelog
 
+## [2.6.0](https://github.com/Viren070/AIOStreams/compare/v2.5.1...v2.6.0) (2025-07-07)
+
+
+### Features
+
+* add statistic stream options to see statistics in stremio ([261b878](https://github.com/Viren070/AIOStreams/commit/261b87872a2882886ec26970614a504dc2f7cd97))
+
+
+### Bug Fixes
+
+* add skipReasons logging for seeder ranges ([a06ac34](https://github.com/Viren070/AIOStreams/commit/a06ac34061e571fe7599eeca5a0fce6d9607b37f))
+* **debridio-watchtower:** ensure resolution is always parsed ([6a0bf09](https://github.com/Viren070/AIOStreams/commit/6a0bf09de660198cd317bcd97ec8777aa4723e74))
+* **debridio-watchtower:** update stream parser ([542863e](https://github.com/Viren070/AIOStreams/commit/542863e2a807d18cd6d32c7ba8fa111a711ec37a))
+* forward manifest parsing errors ([9748ecb](https://github.com/Viren070/AIOStreams/commit/9748ecb576320db85c3a5c81a9d67e8f80dd5a4c))
+* **frontend:** remove menu query param on start/'about' menu ([275a2de](https://github.com/Viren070/AIOStreams/commit/275a2de9605c01911714574a040d27f2c3977c76))
+* only log warning for missing idPrefixes for non 'catlaog' resources ([f8065c9](https://github.com/Viren070/AIOStreams/commit/f8065c9e9ad6959c51f664f377ee75a221a92c32))
+* pass fileIdx through for p2p streams ([0076339](https://github.com/Viren070/AIOStreams/commit/00763397a1b2952f2a99c2e57e8c275863d5aa54))
+* update director to allow string ([2c924ba](https://github.com/Viren070/AIOStreams/commit/2c924bac56e2a3d81cc1fe6ae380286e7fe93b58))
+* update publicIp schema to allow empty string in addition to valid IP ([0539fe4](https://github.com/Viren070/AIOStreams/commit/0539fe49a8cfe8d18525262256388a60691b8e23)), closes [#250](https://github.com/Viren070/AIOStreams/issues/250)
+
 ## [2.5.1](https://github.com/Viren070/AIOStreams/compare/v2.5.0...v2.5.1) (2025-07-04)
 
 
