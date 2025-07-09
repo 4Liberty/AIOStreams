@@ -29,6 +29,7 @@ import {
 } from './db/schemas';
 import { createProxy } from './proxy';
 import { RPDB } from './utils/rpdb';
+import { ArtworkProvider } from './utils/artwork';
 import { FeatureControl } from './utils/feature';
 import Proxifier from './streams/proxifier';
 import StreamLimiter from './streams/limiter';
@@ -370,18 +371,34 @@ export class AIOStreams {
           }
         }
       }
-      if (modification.rpdb && this.userData.rpdbApiKey) {
-        const rpdb = new RPDB(this.userData.rpdbApiKey);
-        catalog = catalog.map((item) => {
-          const posterUrl = rpdb.getPosterUrl(
-            type,
-            (item as any).imdb_id || item.id
-          );
-          if (posterUrl) {
-            item.poster = posterUrl;
+      if (
+        modification.rpdb &&
+        (this.userData.rpdbApiKey ||
+          (this.userData.fanartApiKey && this.userData.fanartEnabled))
+      ) {
+        const artworkProvider = new ArtworkProvider({
+          rpdbApiKey: this.userData.rpdbApiKey,
+          fanartApiKey: this.userData.fanartApiKey,
+          fanartEnabled: this.userData.fanartEnabled,
+        });
+
+        // Process posters asynchronously
+        const posterPromises = catalog.map(async (item) => {
+          try {
+            const posterUrl = await artworkProvider.getPosterUrl(
+              type,
+              (item as any).imdb_id || item.id
+            );
+            if (posterUrl) {
+              item.poster = posterUrl;
+            }
+          } catch (error) {
+            // If poster fetching fails, continue without poster
           }
           return item;
         });
+
+        catalog = await Promise.all(posterPromises);
       }
     }
 

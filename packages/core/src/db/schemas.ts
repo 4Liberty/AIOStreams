@@ -366,6 +366,8 @@ export const UserDataSchema = z.object({
     uncachedAnime: z.array(SortCriterion).optional(),
   }),
   rpdbApiKey: z.string().optional(),
+  fanartApiKey: z.string().optional(),
+  fanartEnabled: z.boolean().optional(),
   formatter: Formatter,
   proxy: StreamProxyConfig.optional(),
   resultLimits: ResultLimitOptions.optional(),

@@ -323,6 +323,56 @@ function Content() {
           }}
         />
       </SettingsCard>
+
+      <SettingsCard
+        title="Fanart.tv Poster Fallback"
+        description="Provide your Fanart.tv API key to use as a fallback when RPDB is disabled or doesn't return a poster"
+      >
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <label className="text-sm font-medium">Enable Fanart.tv</label>
+              <p className="text-sm text-muted-foreground">
+                Use Fanart.tv as a fallback poster source
+              </p>
+            </div>
+            <Switch
+              checked={userData.fanartEnabled}
+              onCheckedChange={(checked) => {
+                setUserData((prev) => ({
+                  ...prev,
+                  fanartEnabled: checked,
+                }));
+              }}
+            />
+          </div>
+          {userData.fanartEnabled && (
+            <TextInput
+              label="Fanart.tv API Key"
+              help={
+                <span>
+                  Get your API Key from{' '}
+                  <a
+                    href="https://fanart.tv/get-an-api-key/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[--brand] hover:underline"
+                  >
+                    here
+                  </a>
+                </span>
+              }
+              value={userData.fanartApiKey}
+              onValueChange={(v) => {
+                setUserData((prev) => ({
+                  ...prev,
+                  fanartApiKey: v,
+                }));
+              }}
+            />
+          )}
+        </div>
+      </SettingsCard>
       <ServiceModal
         open={modalOpen}
         onOpenChange={setModalOpen}
