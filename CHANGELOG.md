@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased]
+
+### Features
+
+* add automatic IMDb ID resolution for catalog and meta responses to improve artwork provider compatibility
+
 ## [2.5.1](https://github.com/Viren070/AIOStreams/compare/v2.5.0...v2.5.1) (2025-07-04)
 
 
