@@ -198,6 +198,84 @@ export class TMDBMetadata {
     return metadata;
   }
 
+  public async getImdbId(
+    id: string,
+    type: (typeof TYPES)[number]
+  ): Promise<string | null> {
+    // Only process movies, series, and anime
+    if (!['movie', 'series', 'anime'].includes(type)) {
+      return null;
+    }
+
+    const externalId = this.parseExternalId(id);
+    if (!externalId) {
+      return null;
+    }
+
+    // If it's already an IMDb ID, return it
+    if (externalId.type === 'imdb') {
+      return externalId.value;
+    }
+
+    try {
+      // Convert to TMDB ID first
+      const tmdbId = await this.convertToTmdbId(externalId, type);
+      
+      // Check cache for IMDb ID
+      const imdbCacheKey = `imdb:${tmdbId}:${type}`;
+      const cachedImdbId = this.idCache.get(imdbCacheKey);
+      if (cachedImdbId) {
+        return cachedImdbId;
+      }
+
+      // Fetch details from TMDB to get IMDb ID
+      const detailsUrl = new URL(
+        API_BASE_URL +
+          (type === 'movie' ? MOVIE_DETAILS_PATH : TV_DETAILS_PATH) +
+          `/${tmdbId}`
+      );
+
+      const detailsResponse = await fetch(detailsUrl, {
+        headers: this.getHeaders(),
+        signal: AbortSignal.timeout(10000),
+      });
+
+      if (!detailsResponse.ok) {
+        return null;
+      }
+
+      const detailsData = await detailsResponse.json();
+      let imdbId = detailsData.imdb_id;
+
+      // For TV shows, if no IMDb ID in details, try external_ids endpoint
+      if (!imdbId && type !== 'movie') {
+        const externalIdsUrl = new URL(
+          API_BASE_URL + TV_DETAILS_PATH + `/${tmdbId}/external_ids`
+        );
+
+        const externalIdsResponse = await fetch(externalIdsUrl, {
+          headers: this.getHeaders(),
+          signal: AbortSignal.timeout(10000),
+        });
+
+        if (externalIdsResponse.ok) {
+          const externalIdsData = await externalIdsResponse.json();
+          imdbId = externalIdsData.imdb_id;
+        }
+      }
+
+      // Cache the result (even if null) to avoid repeated API calls
+      if (imdbId) {
+        this.idCache.set(imdbCacheKey, imdbId, ID_CACHE_TTL);
+      }
+
+      return imdbId || null;
+    } catch (error) {
+      // Don't throw errors, just return null to avoid breaking the flow
+      return null;
+    }
+  }
+
   public async validateAccessToken() {
     const cacheKey = this.accessToken;
     const cachedResult = this.validationCache.get(cacheKey);

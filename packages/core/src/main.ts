@@ -30,6 +30,7 @@ import {
 import { createProxy } from './proxy';
 import { RPDB } from './utils/rpdb';
 import { FeatureControl } from './utils/feature';
+import { TMDBMetadata } from './utils/metadata';
 import Proxifier from './streams/proxifier';
 import StreamLimiter from './streams/limiter';
 import {
@@ -399,6 +400,9 @@ export class AIOStreams {
       });
     }
 
+    // Enrich catalog with IMDb IDs if missing
+    catalog = await this.enrichCatalogWithImdbIds(catalog, type);
+
     // step 4
     return {
       success: true,
@@ -499,9 +503,12 @@ export class AIOStreams {
           addonInstanceId: candidate.instanceId,
         });
 
+        // Enrich meta with IMDb ID if missing
+        const enrichedMeta = await this.enrichMetaWithImdbId(meta, type);
+
         return {
           success: true,
-          data: meta,
+          data: enrichedMeta,
           errors: [], // Clear errors on success
         };
       } catch (error) {
@@ -1149,5 +1156,73 @@ export class AIOStreams {
         }
       }
     }
+  }
+
+  /**
+   * Enriches MetaPreview items with IMDb IDs if missing
+   */
+  private async enrichCatalogWithImdbIds(
+    catalog: MetaPreview[],
+    type: string
+  ): Promise<MetaPreview[]> {
+    if (!Env.TMDB_ACCESS_TOKEN) {
+      return catalog;
+    }
+
+    const tmdbMetadata = new TMDBMetadata();
+    const enrichedCatalog = await Promise.all(
+      catalog.map(async (item) => {
+        // Skip if already has IMDb ID or is not a movie/series
+        if (item.imdb_id || !['movie', 'series'].includes(item.type)) {
+          return item;
+        }
+
+        try {
+          const imdbId = await tmdbMetadata.getImdbId(item.id, item.type as any);
+          if (imdbId) {
+            return { ...item, imdb_id: imdbId };
+          }
+        } catch (error) {
+          // Log error but don't fail the entire request
+          logger.warn(`Failed to get IMDb ID for item ${item.id}`, {
+            error: error instanceof Error ? error.message : String(error),
+          });
+        }
+        return item;
+      })
+    );
+
+    return enrichedCatalog;
+  }
+
+  /**
+   * Enriches Meta item with IMDb ID if missing
+   */
+  private async enrichMetaWithImdbId(
+    meta: Meta,
+    type: string
+  ): Promise<Meta> {
+    if (!Env.TMDB_ACCESS_TOKEN) {
+      return meta;
+    }
+
+    // Skip if already has IMDb ID or is not a movie/series
+    if (meta.imdb_id || !['movie', 'series'].includes(meta.type)) {
+      return meta;
+    }
+
+    try {
+      const tmdbMetadata = new TMDBMetadata();
+      const imdbId = await tmdbMetadata.getImdbId(meta.id, meta.type as any);
+      if (imdbId) {
+        return { ...meta, imdb_id: imdbId };
+      }
+    } catch (error) {
+      // Log error but don't fail the entire request
+      logger.warn(`Failed to get IMDb ID for meta ${meta.id}`, {
+        error: error instanceof Error ? error.message : String(error),
+      });
+    }
+    return meta;
   }
 }

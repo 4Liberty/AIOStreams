@@ -591,6 +591,7 @@ export const MetaPreviewSchema = z
     trailers: z.array(TrailerSchema).or(z.null()).optional(),
     links: z.array(MetaLinkSchema).or(z.null()).optional(),
     // released: z.string().datetime().optional(),
+    imdb_id: z.string().optional(),
   })
   .passthrough();
 
