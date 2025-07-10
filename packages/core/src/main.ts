@@ -29,6 +29,7 @@ import {
 } from './db/schemas';
 import { createProxy } from './proxy';
 import { RPDB } from './utils/rpdb';
+import { FanartTV } from './utils/fanart';
 import { FeatureControl } from './utils/feature';
 import Proxifier from './streams/proxifier';
 import StreamLimiter from './streams/limiter';
@@ -382,6 +383,37 @@ export class AIOStreams {
           }
           return item;
         });
+      }
+      
+      // Use fanart.tv as fallback if RPDB didn't provide a poster and fanart.tv is enabled
+      if (this.userData.fanartEnabled && this.userData.fanartApiKey) {
+        const fanart = new FanartTV(this.userData.fanartApiKey);
+        catalog = await Promise.all(
+          catalog.map(async (item) => {
+            // Only use fanart.tv if item doesn't already have a poster from RPDB
+            if (!item.poster || item.poster === (item as any).originalPoster) {
+              const fanartUrl = fanart.getPosterUrl(
+                type,
+                (item as any).imdb_id || item.id
+              );
+              if (fanartUrl) {
+                try {
+                  const response = await fetch(fanartUrl);
+                  if (response.ok) {
+                    const data = await response.json();
+                    const posterUrl = await fanart.extractPosterFromResponse(data);
+                    if (posterUrl) {
+                      item.poster = posterUrl;
+                    }
+                  }
+                } catch (error) {
+                  // Silently fail for fanart.tv requests
+                }
+              }
+            }
+            return item;
+          })
+        );
       }
     }
 

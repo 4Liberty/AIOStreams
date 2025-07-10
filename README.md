@@ -77,7 +77,7 @@ Take control of your Stremio home page. AIOStreams lets you manage catalogs from
 - **Rename**: Rename both the name and the type of the catalog to whatever you want. (e.g. Changing Cinemeta's `Popular - Movies` to `Popular - 📺`)
 - **Reorder & Disable**: Arrange catalogs in your preferred order or hide the ones you don't use.
 - **Shuffle Catalogs**: Discover new content by shuffling the results of any catalog. You can even persist the shuffle for a set period.
-- **Enhanced Posters**: Automatically apply high-quality posters from [RPDB](https://rpdb.net/) to catalogs that provide a supported metadata source, even if the original addon doesn't support it.
+- **Enhanced Posters**: Automatically apply high-quality posters from [RPDB](https://rpdb.net/) and [fanart.tv](https://fanart.tv/) to catalogs that provide a supported metadata source. fanart.tv is used as a fallback when RPDB doesn't have artwork available, ensuring comprehensive poster coverage.
 
 <p align="center">
 

@@ -323,6 +323,54 @@ function Content() {
           }}
         />
       </SettingsCard>
+
+      <SettingsCard
+        title="fanart.tv"
+        description="fanart.tv will be used as a fallback for artwork if RPDB is unavailable or doesn't have artwork for a specific item"
+      >
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <label className="text-sm font-medium">Enable fanart.tv artwork</label>
+              <p className="text-xs text-[--muted]">Use fanart.tv as a fallback artwork provider</p>
+            </div>
+            <Switch
+              value={!!userData.fanartEnabled}
+              onValueChange={(v) => {
+                setUserData((prev) => ({
+                  ...prev,
+                  fanartEnabled: v,
+                }));
+              }}
+            />
+          </div>
+          
+          <TextInput
+            label="fanart.tv API Key"
+            help={
+              <span>
+                Get your API Key from{' '}
+                <a
+                  href="https://fanart.tv/get-an-api-key/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[--brand] hover:underline"
+                >
+                  here
+                </a>
+              </span>
+            }
+            value={userData.fanartApiKey || ''}
+            onValueChange={(v) => {
+              setUserData((prev) => ({
+                ...prev,
+                fanartApiKey: v,
+              }));
+            }}
+            disabled={!userData.fanartEnabled}
+          />
+        </div>
+      </SettingsCard>
       <ServiceModal
         open={modalOpen}
         onOpenChange={setModalOpen}

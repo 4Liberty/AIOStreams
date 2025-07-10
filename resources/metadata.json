@@ -5,17 +5,15 @@
     "description": "A Stremio addon that provides multiple sources for movies and series.",
     "resources": [
         "catalog",
-        "stream"
-        "subtitles"
-        "meta"
+        "stream",
+        "subtitles",
+        "meta",
         "addon_catalog"
-
-
     ],
     "types": [
         "movie",
-        "series"
-        "music"
+        "series",
+        "music",
         "tv"
     ],
     "catalogs": []
