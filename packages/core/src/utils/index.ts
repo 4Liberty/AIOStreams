@@ -7,6 +7,7 @@ export * from './feature';
 export * from './crypto';
 export * from './http';
 export * from './metadata';
+export * from './getLogo';
 export * as constants from './constants';
 export * from './config';
 export * from './languages';
