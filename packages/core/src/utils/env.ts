@@ -252,6 +252,10 @@ export const Env = cleanEnv(process.env, {
     default: undefined,
     desc: 'TMDB Read Access Token. Used for fetching metadata for the strict title matching option.',
   }),
+  FANART_API_KEY: str({
+    default: undefined,
+    desc: 'Fanart.tv API Key. Used for fetching logo images for meta responses.',
+  }),
 
   // logging settings
   LOG_SENSITIVE_INFO: bool({

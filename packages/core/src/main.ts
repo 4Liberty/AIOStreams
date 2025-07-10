@@ -30,6 +30,7 @@ import {
 import { createProxy } from './proxy';
 import { RPDB } from './utils/rpdb';
 import { FanartTV } from './utils/fanart';
+import { LogoService } from './utils/getLogo';
 import { FeatureControl } from './utils/feature';
 import Proxifier from './streams/proxifier';
 import StreamLimiter from './streams/limiter';
@@ -530,6 +531,22 @@ export class AIOStreams {
           addonName: candidate.addon.name,
           addonInstanceId: candidate.instanceId,
         });
+
+        // Fetch logo if not already present and API keys are available
+        if (!meta.logo && (Env.FANART_API_KEY || Env.TMDB_ACCESS_TOKEN)) {
+          try {
+            const logoService = new LogoService();
+            const logoUrl = await logoService.getLogo(id, type as any, 'en');
+            if (logoUrl) {
+              meta.logo = logoUrl;
+              logger.debug(`Added logo to meta for ${id}: ${logoUrl}`);
+            }
+          } catch (logoError) {
+            logger.debug('Logo fetching failed, continuing without logo:', {
+              error: logoError instanceof Error ? logoError.message : String(logoError),
+            });
+          }
+        }
 
         return {
           success: true,
