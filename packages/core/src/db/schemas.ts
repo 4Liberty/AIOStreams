@@ -635,7 +635,7 @@ export const AddonCatalogResponseSchema = z.object({
 export type AddonCatalogResponse = z.infer<typeof AddonCatalogResponseSchema>;
 export type AddonCatalog = z.infer<typeof AddonCatalogSchema>;
 
-export const ExtrasTypesSchema = z.enum(['skip', 'genre', 'search']);
+export const ExtrasTypesSchema = z.enum(['skip', 'genre', 'search', 'year', 'imdb_rating', 'sort']);
 
 const ExtraSkipSchema = z.object({
   skip: z.coerce.number(),
@@ -646,11 +646,25 @@ const ExtraGenreSchema = z.object({
 const ExtraSearchSchema = z.object({
   search: z.string(),
 });
-export const ExtrasSchema = z.union([
-  ExtraSkipSchema,
-  ExtraGenreSchema,
-  ExtraSearchSchema,
-]);
+const ExtraYearSchema = z.object({
+  year: z.coerce.number(),
+});
+const ExtraImdbRatingSchema = z.object({
+  imdb_rating: z.coerce.number(),
+});
+const ExtraSortSchema = z.object({
+  sort: z.string(),
+});
+
+// Combined schema that supports multiple parameters at once
+export const ExtrasSchema = z.object({
+  skip: z.coerce.number().optional(),
+  genre: z.string().optional(),
+  search: z.string().optional(),
+  year: z.coerce.number().optional(),
+  imdb_rating: z.coerce.number().optional(),
+  sort: z.string().optional(),
+});
 export type Extras = z.infer<typeof ExtrasSchema>;
 
 const ParsedFileSchema = z.object({

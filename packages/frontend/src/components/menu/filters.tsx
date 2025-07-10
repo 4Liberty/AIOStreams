@@ -79,6 +79,7 @@ import { toast } from 'sonner';
 import { Slider } from '../ui/slider/slider';
 import { TbFilterCode } from 'react-icons/tb';
 import { PasswordInput } from '../ui/password-input';
+import { mapTypesToOptions } from '../../utils/typeTranslation';
 
 type Resolution = (typeof RESOLUTIONS)[number];
 type Quality = (typeof QUALITIES)[number];
@@ -1214,11 +1215,7 @@ function Content() {
                         label="Request Types"
                         emptyMessage="There aren't any request types to choose from..."
                         help="Request types that will use title matching. Leave blank to apply to all request types."
-                        options={TYPES.map((type) => ({
-                          label: type,
-                          value: type,
-                          textValue: type,
-                        }))}
+                        options={mapTypesToOptions(TYPES)}
                         value={userData.titleMatching?.requestTypes}
                         onValueChange={(value) => {
                           setUserData((prev) => ({
@@ -1283,11 +1280,7 @@ function Content() {
                         label="Request Types"
                         help="Request types that will use season/episode matching. Leave blank to apply to all request types."
                         emptyMessage="There aren't any request types to choose from..."
-                        options={TYPES.map((type) => ({
-                          label: type,
-                          value: type,
-                          textValue: type,
-                        }))}
+                        options={mapTypesToOptions(TYPES)}
                         value={userData.seasonEpisodeMatching?.requestTypes}
                         onValueChange={(value) => {
                           setUserData((prev) => ({

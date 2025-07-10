@@ -56,6 +56,30 @@ export class CatalogExtras {
     this.extras = { ...this.extras, skip: value };
   }
 
+  get year(): number | undefined {
+    return 'year' in this.extras ? this.extras.year : undefined;
+  }
+
+  set year(value: number | undefined) {
+    this.extras = { ...this.extras, year: value };
+  }
+
+  get imdb_rating(): number | undefined {
+    return 'imdb_rating' in this.extras ? this.extras.imdb_rating : undefined;
+  }
+
+  set imdb_rating(value: number | undefined) {
+    this.extras = { ...this.extras, imdb_rating: value };
+  }
+
+  get sort(): string | undefined {
+    return 'sort' in this.extras ? this.extras.sort : undefined;
+  }
+
+  set sort(value: string | undefined) {
+    this.extras = { ...this.extras, sort: value };
+  }
+
   public toString(): string {
     return Object.entries(this.extras)
       .filter(([_, value]) => value !== undefined)
